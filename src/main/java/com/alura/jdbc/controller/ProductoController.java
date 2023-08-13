@@ -81,19 +81,42 @@ public class ProductoController {
 		return resultado;
 	}
 
-    public void guardar(Map<String, String> producto)throws SQLException {
-    	Connection con = new ConeccionFactory().recuperaConexion();
-    	
-    	PreparedStatement statement = con.prepareStatement("INSERT INTO producto "
-    			+ "(nombre, descripcion, cantidad)"
-    			+" VALUES(?,?,?)",
-    			Statement.RETURN_GENERATED_KEYS);
-    	
-    	statement.setString(1, producto.get("nombre"));
-    	statement.setString(2, producto.get("descripcion"));
-    	statement.setInt(3, Integer.valueOf(producto.get("cantidad")));
-    	
-  
+	public void guardar(Map<String, String> producto) throws SQLException {
+	    String nombre = producto.get("nombre");
+	    String descripcion = producto.get("descripcion");
+	    Integer cantidad = Integer.valueOf(producto.get("cantidad"));
+	    Integer maximoCantidad = 50;
+	    
+	    ConeccionFactory factory = new ConeccionFactory();
+	    Connection con = factory.recuperaConexion();
+	    con.setAutoCommit(false);
+	    
+	    PreparedStatement statement = con.prepareStatement("INSERT INTO producto "
+	            + "(nombre, descripcion, cantidad)"
+	            + " VALUES(?,?,?)",
+	            Statement.RETURN_GENERATED_KEYS);
+	    
+	    do {
+	        int cantidadParaGuardas = Math.min(cantidad, maximoCantidad);
+	        ejecutaRegistro(nombre, descripcion, cantidadParaGuardas, statement);
+	        cantidad -= maximoCantidad;
+	        
+	        
+	    } while (cantidad>0);
+	    
+	    
+	    con.close();
+	}
+
+
+
+	private void ejecutaRegistro(String nombre, String descripcion, Integer cantidad, PreparedStatement statement)
+			throws SQLException {
+		
+		statement.setString(1, nombre);
+    	statement.setString(2, descripcion);
+    	statement.setInt(3, cantidad);
+    
     	statement.execute();
     	
     	
@@ -104,12 +127,6 @@ public class ProductoController {
     	    		resultSet.getInt(1)));
 
     	}
-    	con.close();
-    	
-    	
-    	
-    	
-    	
 	}
 
 }
