@@ -3,11 +3,26 @@ package com.alura.jdbc.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoriaController {
+import com.alura.jdbc.dao.CategoriaDAO;
+import com.alura.jdbc.factory.ConeccionFactory;
+import com.alura.jdbc.modelo.Categoria;
 
-	public List<?> listar() {
+public class CategoriaController {
+	
+	private CategoriaDAO categoriDAO;
+	
+	public CategoriaController() {
+		var factory = new ConeccionFactory();
+		this.categoriDAO = new CategoriaDAO (factory.recuperaConexion());
+		
+		
+		
+	}
+
+	public List<Categoria> listar() {
 		// TODO
-		return new ArrayList<>();
+		return  categoriDAO.listar();
+		
 	}
 
     public List<?> cargaReporte() {

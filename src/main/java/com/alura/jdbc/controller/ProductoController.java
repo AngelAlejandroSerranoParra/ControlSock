@@ -21,72 +21,28 @@ import java.sql.Statement;
 
 public class ProductoController {
 
-	private ProductoDAO productoDAO;
-	
-	public ProductoController() {
-		this.productoDAO = new ProductoDAO(new ConeccionFactory().recuperaConexion());
+    private ProductoDAO productoDao;
+    
+    public ProductoController() {
+        var factory = new ConeccionFactory();
+        this.productoDao = new ProductoDAO(factory.recuperaConexion());
+    }
 
-	}
+    public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) {
+        return productoDao.modificar(nombre, descripcion, cantidad, id);
+    }
 
-	public int modificar(String nombre, String descripcion, Integer cantidad, Integer ID) throws SQLException {
-	    ConeccionFactory factory = new ConeccionFactory();
-	    final Connection con = factory.recuperaConexion();
-	    
-	    try(con){   
-	   final PreparedStatement statement = con.prepareStatement("UPDATE producto SET "
-	            + "nombre = ?, descripcion = ?, cantidad = ? "
-	            + "WHERE ID = ?");
-	    try(statement){
-	    	
-	    
-	    statement.setString(1, nombre);
-	    statement.setString(2, descripcion);
-	    statement.setInt(3, cantidad);  
-	    statement.setInt(4, ID);  
-	    
-	    int updateCount = statement.executeUpdate();
-	    con.close();
-	    
-	    return updateCount;
-	    	}
-	    
-	    }
-	}
+    public int eliminar(Integer id) {
+        return productoDao.eliminar(id);
+    }
 
+    public List<Producto> listar() {
+        return productoDao.listar();
+    }
 
-	public int eliminar(Integer ID) throws SQLException {
-	    ConeccionFactory factory = new ConeccionFactory();
-	    final Connection con = factory.recuperaConexion();
-	    try(con){
-		    final PreparedStatement statement = con.prepareStatement("DELETE FROM PRODUCTO WHERE ID = ?");
-		    try (statement){
-			    statement.setInt(1, ID);
-			    int updateCount = statement.executeUpdate(); 
-			    con.close();
-			    return updateCount;
-		    }
-	    }
-	}
-
-
-	public List<Producto> listar(){
-		return productoDAO.listar();
-		
-
-		
-	}
-
-	public void guardar(Producto producto)  {
-		
-		productoDAO.guardar(producto);
-		
-	  
-	    
-		    	    
-	}
-
-
-
-
+    public void guardar(Producto producto , Integer categoriaId ) {
+    	producto.setCategoriaId(categoriaId);
+        productoDao.guardar(producto);
+    }
 
 }
