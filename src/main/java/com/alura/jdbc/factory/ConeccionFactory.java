@@ -13,21 +13,27 @@ public class ConeccionFactory {
 	private DataSource dataSource;
 	
 	public ConeccionFactory() {
-		var pooledDataSource = new ComboPooledDataSource();
-		pooledDataSource.setJdbcUrl("jdbc:mysql://localhost/controL_de_stock?useTimeZone=true&serverTimeZone=UTC");
-		pooledDataSource.setUser("root");
-		pooledDataSource.setPassword("12345");
-		pooledDataSource.setMaxPoolSize(10);
+		var comboPooledDataSource = new ComboPooledDataSource();
+		comboPooledDataSource.setJdbcUrl("jdbc:mysql://localhost/controL_de_stock?useTimeZone=true&serverTimeZone=UTC");
+		comboPooledDataSource.setUser("root");
+		comboPooledDataSource.setPassword("12345");
+		comboPooledDataSource.setMaxPoolSize(10);
 		
 		
-		this.dataSource = pooledDataSource;
+		this.dataSource = comboPooledDataSource;
 		
 
 		
 	}
 	
-	public Connection recuperaConexion() throws SQLException {
-		return this.dataSource.getConnection();
+	public Connection recuperaConexion() {
+		try {
+			return this.dataSource.getConnection();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RuntimeException(e);
+			
+		}
 		
 	}
 

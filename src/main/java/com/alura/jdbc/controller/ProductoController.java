@@ -21,6 +21,13 @@ import java.sql.Statement;
 
 public class ProductoController {
 
+	private ProductoDAO productoDAO;
+	
+	public ProductoController() {
+		this.productoDAO = new ProductoDAO(new ConeccionFactory().recuperaConexion());
+
+	}
+
 	public int modificar(String nombre, String descripcion, Integer cantidad, Integer ID) throws SQLException {
 	    ConeccionFactory factory = new ConeccionFactory();
 	    final Connection con = factory.recuperaConexion();
@@ -62,41 +69,16 @@ public class ProductoController {
 	}
 
 
-	public List<Map<String, String>> listar() throws SQLException{
-		ConeccionFactory factory = new ConeccionFactory();
-		final Connection con= factory.recuperaConexion();
+	public List<Producto> listar(){
+		return productoDAO.listar();
 		
-		try(con){
-			
-				final PreparedStatement  statement = con.prepareStatement("SELECT ID, nombre, descripcion, cantidad FROM producto");
-				try(statement){
-				statement.execute();
-				
-				ResultSet resultSet = statement.getResultSet();
-				
-				List<Map<String, String>> resultado = new ArrayList<>();
-		
-			
-				while( resultSet.next()) {		
-					Map<String, String>fila = new HashMap<>();
-					fila.put("ID", String.valueOf(resultSet.getInt("ID")));
-					fila.put("nombre", resultSet.getString("nombre"));
-					fila.put("descripcion", resultSet.getString("descripcion"));
-					fila.put("cantidad", String.valueOf(resultSet.getInt("cantidad")));
-					
-					resultado.add(fila);
-		
-				}
-				return resultado;
 
-				}
-		}
+		
 	}
 
-	public void guardar(Producto producto) throws SQLException {
+	public void guardar(Producto producto)  {
 		
-		ProductoDAO productoDAO = new ProductoDAO(new ConeccionFactory().recuperaConexion());
-		productoDAO.guardarProducto(producto);
+		productoDAO.guardar(producto);
 		
 	  
 	    

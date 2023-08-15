@@ -13,6 +13,15 @@ public class Producto {
 		this.cantidad = cantidad;
 	}
 
+	public Producto(int ID, String nombre, String descripcion, int cantidad) {
+		this.Id = ID;
+		this.nombre = nombre ;
+		this.descripcion = descripcion;
+		this.cantidad = cantidad;
+		
+		
+	}
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -28,6 +37,9 @@ public class Producto {
 	public void setId(Integer Id) {
 		this.Id = Id;
 	}
+	public Integer getid() {
+		return this.Id;
+	}
 	
 	@Override
 	public String toString() {
@@ -39,5 +51,7 @@ public class Producto {
 			this.cantidad
 		);
 	}
+
+	
 }
 
