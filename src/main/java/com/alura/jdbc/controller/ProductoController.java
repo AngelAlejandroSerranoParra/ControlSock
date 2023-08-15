@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alura.jdbc.factory.ConeccionFactory;
+import com.alura.jdbc.modelo.Producto;
 import com.mysql.cj.xdevapi.PreparableStatement;
 
 import java.sql.Statement;
@@ -90,17 +91,14 @@ public class ProductoController {
 		}
 	}
 
-	public void guardar(Map<String, String> producto) throws SQLException {
-	    String nombre = producto.get("nombre");
-	    String descripcion = producto.get("descripcion");
-	    Integer cantidad = Integer.valueOf(producto.get("cantidad"));
-	    Integer maximoCantidad = 50;
+	public void guardar(Producto producto) throws SQLException {
+	  
 	    
 	    ConeccionFactory factory = new ConeccionFactory();
 	    final Connection con = factory.recuperaConexion();
-	    try(con){
-	    	
 	    
+	    try(con){
+	    	 
 	    con.setAutoCommit(false);
 	    
 	    final PreparedStatement statement = con.prepareStatement("INSERT INTO producto "
@@ -108,23 +106,17 @@ public class ProductoController {
 	            + " VALUES(?,?,?)",
 	            Statement.RETURN_GENERATED_KEYS);
 	    try(statement){
-	
-	    do {
-	        int cantidadParaGuardas = Math.min(cantidad, maximoCantidad);
-	        ejecutaRegistro(nombre, descripcion, cantidadParaGuardas, statement);
+
+	        ejecutaRegistro(producto , statement);
 	        
-	        cantidad -= maximoCantidad;
-	        
-	        
-	    } while (cantidad>0);
-	    
-	    con.commit();
-	    System.out.println("Commit");
+	        con.commit();
+	   
 	   
 	}catch (Exception e) 
 	    {
-		con.rollback();	
+		e.printStackTrace();
 	    System.out.println("Commit");
+	    con.rollback();
 
 			}
 	    		}
@@ -133,23 +125,20 @@ public class ProductoController {
 
 
 
-	private void ejecutaRegistro(String nombre, String descripcion, Integer cantidad, PreparedStatement statement)
+	private void ejecutaRegistro(Producto producto, PreparedStatement statement)
 			throws SQLException {
-		if (cantidad<50) {
-			throw new RuntimeException("Ocurrio un Error");
-			
-		}
-		statement.setString(1, nombre);
-    	statement.setString(2, descripcion);
-    	statement.setInt(3, cantidad);
+		
+		statement.setString(1, producto.getNombre());
+    	statement.setString(2, producto.getDescripcion());
+    	statement.setInt(3, producto.getCantidad());
     	statement.execute();
     	
-    	
+
     	final ResultSet resultSet = statement.getGeneratedKeys();
     	try(resultSet){
     	while(resultSet.next()) {
-    		System.out.println(String.format("Fue Insertado el producto de ID %d",
-    	    		resultSet.getInt(1)));
+    		producto.setId(resultSet.getInt(1));
+    		System.out.println(String.format("Fue Insertado el producto de ID %s",producto));
 
     							}
     				}
