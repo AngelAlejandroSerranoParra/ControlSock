@@ -10,6 +10,7 @@ import java.util.List;
 import javax.management.RuntimeErrorException;
 
 import com.alura.jdbc.modelo.Categoria;
+import com.alura.jdbc.modelo.Producto;
 
 public class CategoriaDAO {
 	
@@ -91,6 +92,17 @@ public class CategoriaDAO {
 								
 								
 							});
+					
+					Producto producto = new Producto(
+						    resultSet.getInt("p.id"),
+						    resultSet.getString("nombre"),  
+						    resultSet.getInt("p.cantidad")
+						);
+					
+					categoria.agregar(producto);
+					
+
+					
 							
 							
 					

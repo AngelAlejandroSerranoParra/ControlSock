@@ -23,6 +23,16 @@ public class Producto {
 		
 	}
 
+	public Producto(int id, String nombre, int cantidad) {
+		this.Id = id;
+		this.nombre = nombre ;
+		this.cantidad = cantidad ;
+		
+		
+	
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getNombre() {
 		return nombre;
 	}
