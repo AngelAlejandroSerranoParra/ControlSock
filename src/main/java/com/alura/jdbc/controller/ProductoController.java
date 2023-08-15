@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.alura.jdbc.dao.ProductoDAO;
 import com.alura.jdbc.factory.ConeccionFactory;
+import com.alura.jdbc.modelo.Categoria;
 import com.alura.jdbc.modelo.Producto;
 import com.mysql.cj.PerConnectionLRUFactory;
 import com.mysql.cj.xdevapi.PreparableStatement;
@@ -38,6 +39,11 @@ public class ProductoController {
 
     public List<Producto> listar() {
         return productoDao.listar();
+    }
+    
+    public List<Producto> listar(Categoria categoria){
+    	return productoDao.listar(categoria.getId());
+    	
     }
 
     public void guardar(Producto producto , Integer categoriaId ) {

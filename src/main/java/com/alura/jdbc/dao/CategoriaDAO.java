@@ -28,8 +28,11 @@ public class CategoriaDAO {
 		List<Categoria>resulado = new ArrayList<>();
 		
 		try {
+			var queySelect = "SELECT id , nombre from categoria";
+			
+			System.out.println(queySelect);
 			final PreparedStatement statement = con.prepareStatement(
-					"SELECT id , nombre from categoria");
+					queySelect);
 			
 			try (statement){
 
@@ -40,6 +43,56 @@ public class CategoriaDAO {
 							 resultSet.getString("nombre"));
 					
 					resulado.add(categoria);
+					
+					 
+				 }
+				
+			};
+			}
+			
+			 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RuntimeException(e);
+			
+		}
+		
+		return resulado;
+	}
+
+	public List<Categoria> listarConProductos() {
+		List<Categoria>resulado = new ArrayList<>();
+		
+		try {
+			var queySelect = "SELECT c.id , c.nombre ,p.id , p.nombre , p.cantidad"
+					+"from categoria c"
+					+"INNER JOIN producto p ON c.id = p.categoria_id";
+			
+			System.out.println(queySelect);
+			final PreparedStatement statement = con.prepareStatement(
+					queySelect);
+			
+			try (statement){
+
+			final ResultSet resultSet = statement.executeQuery();
+			try (resultSet) {
+				 while (resultSet.next()) {
+					Integer categoriaId = resultSet.getInt("id");
+					String categoriaNombre = resultSet.getString("nombre");
+					var categoria = resulado
+							.stream()
+							.filter(cat -> cat.getId().equals(categoriaId))
+							.findAny().orElseGet(() ->{
+								Categoria cat = new Categoria(categoriaId,
+										categoriaNombre);
+								
+								resulado.add(cat);
+								return cat;
+								
+								
+							});
+							
+							
 					
 					 
 				 }
