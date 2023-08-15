@@ -10,8 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alura.jdbc.dao.ProductoDAO;
 import com.alura.jdbc.factory.ConeccionFactory;
 import com.alura.jdbc.modelo.Producto;
+import com.mysql.cj.PerConnectionLRUFactory;
 import com.mysql.cj.xdevapi.PreparableStatement;
 
 import java.sql.Statement;
@@ -92,58 +94,17 @@ public class ProductoController {
 	}
 
 	public void guardar(Producto producto) throws SQLException {
+		
+		ProductoDAO productoDAO = new ProductoDAO(new ConeccionFactory().recuperaConexion());
+		productoDAO.guardarProducto(producto);
+		
 	  
 	    
-	    ConeccionFactory factory = new ConeccionFactory();
-	    final Connection con = factory.recuperaConexion();
-	    
-	    try(con){
-	    	 
-	    con.setAutoCommit(false);
-	    
-	    final PreparedStatement statement = con.prepareStatement("INSERT INTO producto "
-	            + "(nombre, descripcion, cantidad)"
-	            + " VALUES(?,?,?)",
-	            Statement.RETURN_GENERATED_KEYS);
-	    try(statement){
-
-	        ejecutaRegistro(producto , statement);
-	        
-	        con.commit();
-	   
-	   
-	}catch (Exception e) 
-	    {
-		e.printStackTrace();
-	    System.out.println("Commit");
-	    con.rollback();
-
-			}
-	    		}
 		    	    
 	}
 
 
 
-	private void ejecutaRegistro(Producto producto, PreparedStatement statement)
-			throws SQLException {
-		
-		statement.setString(1, producto.getNombre());
-    	statement.setString(2, producto.getDescripcion());
-    	statement.setInt(3, producto.getCantidad());
-    	statement.execute();
-    	
 
-    	final ResultSet resultSet = statement.getGeneratedKeys();
-    	try(resultSet){
-    	while(resultSet.next()) {
-    		producto.setId(resultSet.getInt(1));
-    		System.out.println(String.format("Fue Insertado el producto de ID %s",producto));
-
-    							}
-    				}
-    	
-    	resultSet.close();
-	}
 
 }
